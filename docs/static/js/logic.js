@@ -111,7 +111,7 @@ testArray.forEach(element =>
 }
 
 
-d3.json("/static/data/PB2002_boundaries.json", function(data) {
+d3.json("PB2002_boundaries.json", function(data) {
 
   console.log(data);
 
