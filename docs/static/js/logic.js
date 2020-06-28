@@ -71,7 +71,7 @@ var circle = L.circle([51.508, -0.11], {
 
 var quake = $.getJSON('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_week.geojson', function(data) {
     // JSON result in `data` variable
-    console.log(data.features);
+    // console.log(data.features);
 
     (data.features).forEach(element => 
         
@@ -90,3 +90,80 @@ var quake = $.getJSON('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary
 
 });
 
+
+function switcher(inputArray) {
+
+  let coorArray = [];
+
+let testArray = inputArray;
+
+testArray.forEach(element => 
+    
+    coorArray.push(  [element[1],element[0]]  )   
+    
+  )
+
+  console.log(coorArray);
+
+  return [
+    coorArray
+    ];   // The function returns the product of p1 and p2
+}
+
+
+d3.json("/static/data/PB2002_boundaries.json", function(data) {
+
+  console.log(data);
+
+  (data.features).forEach(element => 
+
+      
+      // console.log(element)
+    
+
+    L.polyline( switcher(element.geometry.coordinates), {color: 'red',fillOpacity: 0.0}).addTo(mymap)
+
+);
+
+
+});
+
+// L.polygon(element.geometry.coordinates, {color: 'red'}).addTo(mymap)
+
+// console.log(polyArray);
+
+// var polygon = L.polygon(polyArray, {color: 'red'}).addTo(mymap);
+
+// mymap.fitBounds(polygon.getBounds());
+
+
+var gray = L.layerGroup();
+
+  // more than one service can be grouped together and passed to the control together
+  L.esri.basemapLayer('DarkGray').addTo(gray);
+  L.esri.basemapLayer('GrayLabels').addTo(gray);
+
+  var states = L.esri.featureLayer({
+    url: 'https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer/3',
+    style: function (feature) {
+      return { color: '#bada55', weight: 2 };
+    }
+  });
+
+  var map = L.map('map', {
+    center: [39, -97.5],
+    zoom: 4,
+    layers: [gray, states]
+  });
+
+  var baseLayers = {
+    Grayscale: gray,
+    Streetmap: L.esri.basemapLayer('Streets')
+  };
+
+  var overlays = {
+    'U.S. States': states
+  };
+
+  // https://leafletjs.com/reference.html#control-layers
+  L.control.layers(baseLayers, overlays).addTo(mymap);
